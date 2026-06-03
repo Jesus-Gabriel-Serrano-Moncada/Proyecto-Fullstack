@@ -8,6 +8,7 @@ public class Producto {
     @Id
     private String id;
     private String nombre;
+    
     private String descripcion;
     private float precio;
     private int stock;
