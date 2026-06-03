@@ -1,3 +1,4 @@
+git status
 package com.example.mongoProducto.model;
 
 import org.springframework.data.annotation.Id;
