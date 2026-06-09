@@ -21,17 +21,16 @@ public class CarritoService {
         return CarritoRepository.findAll();
     }
 
-    // Buscar carrito por ID
+
     public Optional<Carrito> obtenerPorId(Long id) {
         return CarritoRepository.findById(id);
     }
 
-    // Crear carrito
+
     public Carrito guardar(Carrito carrito) {
         return CarritoRepository.save(carrito);
     }
 
-    // Eliminar carrito
     public void eliminar(Long id) {
         CarritoRepository.deleteById(id);
     }
