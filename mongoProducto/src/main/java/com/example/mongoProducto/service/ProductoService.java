@@ -70,7 +70,7 @@ public class ProductoService {
     public ResponseEntity<?> actualizarProducto(String id, Producto p) {
         
         /* Existe? */
-        if (repo.findById(p.getId()).orElse(null) == null) {
+        if (repo.findById(id).orElse(null) == null) {
             return ResponseEntity.status(404)
                                     .body("El producto de id -< "+p.getId()+" >- NO existe");
         }
@@ -125,8 +125,8 @@ public class ProductoService {
             return ResponseEntity.status(404)
                                     .body("El producto de id -< "+id+" >- NO existe");
         }
-
+        repo.deleteById(id);
         /* ELSE */
-        return ResponseEntity.ok("Usuario de id: ("+id+") Ha sido borrado!");
+        return ResponseEntity.ok("Producto de id: ("+id+") Ha sido borrado!");
     }
 }
