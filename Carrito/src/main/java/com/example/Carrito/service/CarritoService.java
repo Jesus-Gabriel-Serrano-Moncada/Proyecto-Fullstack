@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.Carrito.repository.CarritoRepository;
 import com.example.Carrito.model.Carrito;
-import com.example.Carrito.service.CarritoService;
 
 @Service
 public class CarritoService {
@@ -16,7 +15,7 @@ public class CarritoService {
     @Autowired
     private CarritoRepository CarritoRepository;
 
-    // Listar todos los carritos
+
     public List<Carrito> obtenerTodos() {
         return CarritoRepository.findAll();
     }
