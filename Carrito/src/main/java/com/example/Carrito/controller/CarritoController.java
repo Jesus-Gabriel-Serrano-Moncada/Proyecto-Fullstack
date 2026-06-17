@@ -1,8 +1,5 @@
 package com.example.Carrito.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.Carrito.model.Carrito;
@@ -29,12 +26,12 @@ public class CarritoController {
     }
 
     @PostMapping
-    public Carrito guardar(@RequestBody Carrito carrito) {
+    public ResponseEntity<?> guardar(@RequestBody Carrito carrito) {
         return service.guardar(carrito);
     }
 
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
-        service.eliminar(id);
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        return service.eliminar(id);
     }
 }

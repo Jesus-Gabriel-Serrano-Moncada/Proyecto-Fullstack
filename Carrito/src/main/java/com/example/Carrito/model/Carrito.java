@@ -11,6 +11,7 @@ public class Carrito {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private int cantidad;
     private String usuarioId;
     private String productoId;

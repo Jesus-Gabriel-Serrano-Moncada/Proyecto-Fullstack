@@ -21,9 +21,8 @@ public class CarritoService {
     public ResponseEntity<?> obtenerTodos() {
 
         if (repo.findAll().isEmpty()) {
-            return ResponseEntity
-                .status(404)
-                    .body("No hay productos en el carrito");
+            return ResponseEntity.status(404)
+                                    .body("No hay productos en el carrito");
         }
         return ResponseEntity
                     .ok(repo.findAll());
@@ -33,19 +32,27 @@ public class CarritoService {
     public ResponseEntity<?> obtenerPorId(Long id) {
         
         if (repo.findById(id).orElse(null) == null) {
-            return ResponseEntity
-                        .status(404)
-                            .body("No hay un carrito con la id < "+id+" >");
+            return ResponseEntity.status(404)
+                                    .body("No hay un carrito con la id < "+id+" >");
         }
         return ResponseEntity.ok(repo.findById(id));
     }
 
 
-    public Carrito guardar(Carrito carrito) {
-        return repo.save(carrito);
+    public ResponseEntity<?> guardar(Carrito c) {
+        
+        return ResponseEntity.ok(repo.save(c));
+
     }
 
-    public void eliminar(Long id) {
+    public ResponseEntity<?> eliminar(Long id) {
+
+        if (repo.findById(id).orElse(null) == null) {
+            return ResponseEntity.status(404)
+                                    .body("No hay un carrito con la id < "+id+" >");
+        }
+
         repo.deleteById(id);
+        return ResponseEntity.ok("Carrito < "+id+" > ha sido eliminado");
     }
 }
