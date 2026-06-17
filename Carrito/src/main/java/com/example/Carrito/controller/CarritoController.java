@@ -2,6 +2,8 @@ package com.example.Carrito.controller;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.Carrito.model.Carrito;
 import com.example.Carrito.service.CarritoService;
@@ -17,12 +19,12 @@ public class CarritoController {
     }
 
     @GetMapping
-    public List<Carrito> listar() {
+    public ResponseEntity<?> listar() {
         return service.obtenerTodos();
     }
 
     @GetMapping("/{id}")
-    public Optional<Carrito> buscar(@PathVariable Long id) {
+    public ResponseEntity<?> buscar(@PathVariable Long id) {
         return service.obtenerPorId(id);
     }
 

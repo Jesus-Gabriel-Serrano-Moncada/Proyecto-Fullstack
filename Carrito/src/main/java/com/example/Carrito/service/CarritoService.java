@@ -4,33 +4,48 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.Carrito.repository.CarritoRepository;
+
 import com.example.Carrito.model.Carrito;
 
 @Service
 public class CarritoService {
 
     @Autowired
-    private CarritoRepository CarritoRepository;
+    private CarritoRepository repo;
 
 
-    public List<Carrito> obtenerTodos() {
-        return CarritoRepository.findAll();
+    public ResponseEntity<?> obtenerTodos() {
+
+        if (repo.findAll().isEmpty()) {
+            return ResponseEntity
+                .status(404)
+                    .body("No hay productos en el carrito");
+        }
+        return ResponseEntity
+                    .ok(repo.findAll());
     }
 
 
-    public Optional<Carrito> obtenerPorId(Long id) {
-        return CarritoRepository.findById(id);
+    public ResponseEntity<?> obtenerPorId(Long id) {
+        
+        if (repo.findById(id).orElse(null) == null) {
+            return ResponseEntity
+                        .status(404)
+                            .body("No hay un carrito con la id < "+id+" >");
+        }
+        return ResponseEntity.ok(repo.findById(id));
     }
 
 
     public Carrito guardar(Carrito carrito) {
-        return CarritoRepository.save(carrito);
+        return repo.save(carrito);
     }
 
     public void eliminar(Long id) {
-        CarritoRepository.deleteById(id);
+        repo.deleteById(id);
     }
 }
