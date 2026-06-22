@@ -22,22 +22,22 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> searchById(@PathVariable String id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable String id) {
         return service.buscarPorId(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody Usuario u) {
+    public ResponseEntity<?> crearUsuario(@RequestBody Usuario u) {
         return service.crear(u);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody Usuario u) {
+    public ResponseEntity<?> actualizarUsuario(@PathVariable String id, @RequestBody Usuario u) {
         return service.actualizar(id, u);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable String id) {
+    public ResponseEntity<?> borrarUsuarioPorId(@PathVariable String id) {
         return service.borrarPorId(id);
     }
 }

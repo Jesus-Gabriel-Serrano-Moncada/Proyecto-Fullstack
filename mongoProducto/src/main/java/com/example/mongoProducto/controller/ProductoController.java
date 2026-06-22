@@ -2,9 +2,9 @@ package com.example.mongoProducto.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.example.mongoProducto.model.Producto;
 import com.example.mongoProducto.service.ProductoService;
 
@@ -12,31 +12,35 @@ import com.example.mongoProducto.service.ProductoService;
 @RequestMapping("/productos")
 public class ProductoController {
 
-    @Autowired
-    private ProductoService service;
+    private final ProductoService service;
+
+    public ProductoController(ProductoService service) {
+        this.service = service;
+    }
 
     @GetMapping
-    public List<Producto> listProductos() {
+    public List<Producto> listarProductos() {
         return service.listar();
     }
 
     @GetMapping("/nombre/{nombre}")
-    public List<Producto> searchByNombre(@PathVariable String nombre) {
+    public List<Producto> buscarPorNombre(@PathVariable String nombre) {
         return service.buscarPorNombre(nombre);
     }
 
     @PostMapping
-    public ResponseEntity<?> createProducto(@RequestBody Producto p) {
-        return service.crearProducto(p);
+    public ResponseEntity<?> crearProducto(@RequestBody Producto producto) {
+        return service.crearProducto(producto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProducto(@PathVariable String id, @RequestBody Producto p) {
-        return service.actualizarProducto(id, p);
+    public ResponseEntity<?> actualizarProducto(@PathVariable String id,
+                                               @RequestBody Producto producto) {
+        return service.actualizarProducto(id, producto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProducto(@PathVariable String id) {
+    public ResponseEntity<?> eliminarProducto(@PathVariable String id) {
         return service.borrarPorId(id);
     }
 }
