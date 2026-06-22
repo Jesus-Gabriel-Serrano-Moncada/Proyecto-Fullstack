@@ -24,151 +24,152 @@ public class UsuarioService {
     /* Buscar a un usuario por su ID */
     public ResponseEntity<?> buscarPorId(String id) {
         Usuario existe = repo.findById(id).orElse(null);
+
         if (existe == null) {
             return ResponseEntity.status(404)
-                                    .body("No existe un usuario con la id ("+id+")");
+                    .body("No existe un usuario con la id (" + id + ")");
         }
+
         return ResponseEntity.ok(existe);
     }
-    
+
     /* POST MAPPING */
     /* Crear un usuario */
     public ResponseEntity<?> crear(Usuario u) {
+
         String[] roles = new String[2];
         roles[0] = "comprador";
         roles[1] = "vendedor";
 
         /* Validacion de nombre */
-        if (u.getNombre().trim().isEmpty()) {
+        if (u.getNombre() == null || u.getNombre().trim().isEmpty()) {
             return ResponseEntity.badRequest()
-                                    .body("ERROR!\nEl nombre del usuario no puede estar vacio!");
+                    .body("ERROR!\nEl nombre del usuario no puede estar vacio!");
         }
+
         if (u.getNombre().trim().length() < 3) {
             return ResponseEntity.badRequest()
-                                    .body("ERROR!\nEl nombre del usuario no puede tener menos de 3 caracteres!\nNombre actual: ("+u.getNombre()+")");
+                    .body("ERROR!\nEl nombre del usuario no puede tener menos de 3 caracteres!\nNombre actual: (" + u.getNombre() + ")");
         }
 
         /* Validaciones de correo */
-        if (u.getCorreo().trim().isEmpty()) {
+        if (u.getCorreo() == null || u.getCorreo().trim().isEmpty()) {
             return ResponseEntity.badRequest()
-                                    .body("El correo no puede estar vacio!");
+                    .body("El correo no puede estar vacio!");
         }
-        if (!u.getCorreo().toLowerCase().contains("@gmail.com") ||
-            !u.getCorreo().toLowerCase().contains("@hotmail.com") ||
-            !u.getCorreo().toLowerCase().contains("@outlook.com") ||
-            !u.getCorreo().toLowerCase().contains("@yahoo.com")) {
+
+        if (!u.getCorreo().toLowerCase().contains("@gmail.com")
+                && !u.getCorreo().toLowerCase().contains("@hotmail.com")
+                && !u.getCorreo().toLowerCase().contains("@outlook.com")
+                && !u.getCorreo().toLowerCase().contains("@yahoo.com")) {
+
             return ResponseEntity.badRequest()
-                                    .body("El correo debe tener dominio! (@)\nCorreo actual: ("+u.getCorreo()+")");
+                    .body("El correo debe pertenecer a un dominio permitido (gmail, hotmail, outlook o yahoo)\nCorreo actual: (" + u.getCorreo() + ")");
         }
 
         /* Validaciones de edad */
         if (u.getEdad() <= 18) {
             return ResponseEntity.badRequest()
-                                    .body("La edad debe ser mayor a 18!\nEdad actual: ("+u.getEdad()+")");
-        }
-        
-        /* Validaciones de Rol */
-        if (u.getRol().trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                                    .body("ERROR!\nEl rol del usuario no puede estar vacio!");
-        }
-        if (!u.getRol().equalsIgnoreCase(roles[0]) && !u.getRol().equalsIgnoreCase(roles[1])) {
-            return ResponseEntity.badRequest()
-                                    .body("El rol debe ser [Vendedor] o [Comprador]\nRol actual: "+u.getRol()+")");
-        }
-        /* Validar contraseña */
-        if (u.getContraseña().trim().isEmpty() || u.getContraseña() == null) {
-            return ResponseEntity.badRequest()
-                                    .body("ERROR!\nLa contraseña del usuario no puede estar vacia!");
-        }
-        if (u.getContraseña().trim().length() < 8) {
-            return ResponseEntity.badRequest()
-                                    .body("ERROR!\nLa contraseña del usuario no puede tener menos de 8 caracteres!\nNombre actual: ("+u.getNombre()+")");
+                    .body("La edad debe ser mayor a 18!\nEdad actual: (" + u.getEdad() + ")");
         }
 
-        /* Si pasa toda las validaciones */
+        /* Validaciones de Rol */
+        if (u.getRol() == null || u.getRol().trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body("ERROR!\nEl rol del usuario no puede estar vacio!");
+        }
+
+        if (!u.getRol().equalsIgnoreCase(roles[0]) &&
+            !u.getRol().equalsIgnoreCase(roles[1])) {
+
+            return ResponseEntity.badRequest()
+                    .body("El rol debe ser [Vendedor] o [Comprador]\nRol actual: (" + u.getRol() + ")");
+        }
+
+        /* Si pasa todas las validaciones */
         return ResponseEntity.ok(repo.save(u));
     }
 
     /* PUT MAPPING */
     /* Actualizar a un usuario por ID */
     public ResponseEntity<?> actualizar(String id, Usuario u) {
+
         String[] roles = new String[2];
         roles[0] = "comprador";
         roles[1] = "vendedor";
 
         /* Existe */
         Usuario existe = repo.findById(id).orElse(null);
+
         if (existe == null) {
             return ResponseEntity.status(404)
-                                    .body("No existe un usuario con la id ("+id+")");
+                    .body("No existe un usuario con la id (" + id + ")");
         }
 
         /* Validacion de nombre */
-        if (u.getNombre().trim().isEmpty() || u.getNombre() == null) {
+        if (u.getNombre() == null || u.getNombre().trim().isEmpty()) {
             return ResponseEntity.badRequest()
-                                    .body("ERROR!\nEl nombre del usuario no puede estar vacio!");
+                    .body("ERROR!\nEl nombre del usuario no puede estar vacio!");
         }
+
         if (u.getNombre().trim().length() < 3) {
             return ResponseEntity.badRequest()
-                                    .body("ERROR!\nEl nombre del usuario no puede tener menos de 3 caracteres!\nNombre actual: ("+u.getNombre()+")");
+                    .body("ERROR!\nEl nombre del usuario no puede tener menos de 3 caracteres!\nNombre actual: (" + u.getNombre() + ")");
         }
 
         /* Validaciones de correo */
-        if (u.getCorreo().trim().isEmpty() || u.getCorreo() == null) {
+        if (u.getCorreo() == null || u.getCorreo().trim().isEmpty()) {
             return ResponseEntity.badRequest()
-                                    .body("El correo no puede estar vacio!");
+                    .body("El correo no puede estar vacio!");
         }
-        if (!u.getCorreo().toLowerCase().contains("@gmail.com") &&
-            !u.getCorreo().toLowerCase().contains("@hotmail.com") &&
-            !u.getCorreo().toLowerCase().contains("@outlook.com") &&
-            !u.getCorreo().toLowerCase().contains("@yahoo.com")) {
+
+        if (!u.getCorreo().toLowerCase().contains("@gmail.com")
+                && !u.getCorreo().toLowerCase().contains("@hotmail.com")
+                && !u.getCorreo().toLowerCase().contains("@outlook.com")
+                && !u.getCorreo().toLowerCase().contains("@yahoo.com")) {
+
             return ResponseEntity.badRequest()
-                                    .body("El correo debe tener dominio! (@)\nCorreo actual: ("+u.getCorreo()+")");
+                    .body("El correo debe pertenecer a un dominio permitido (gmail, hotmail, outlook o yahoo)\nCorreo actual: (" + u.getCorreo() + ")");
         }
 
         /* Validaciones de edad */
         if (u.getEdad() <= 18) {
             return ResponseEntity.badRequest()
-                                    .body("El usuario debe ser mayor de edad!\nEdad actual: ("+u.getEdad()+")");
-        }
-        
-        /* Validaciones de Rol */
-        if (u.getRol().trim().isEmpty() || u.getRol() == null) {
-            return ResponseEntity.badRequest()
-                                    .body("ERROR!\nEl rol del usuario no puede estar vacio!");
-        }
-        if (!u.getRol().equalsIgnoreCase(roles[0]) && !u.getRol().equalsIgnoreCase(roles[1])) {
-            return ResponseEntity.badRequest()
-                                    .body("El rol debe ser [Vendedor] o [Comprador]\nRol actual: "+u.getRol()+")");
-        }
-        
-        /* Validaciones de contraseña */
-        if (u.getContraseña().trim().isEmpty() || u.getContraseña() == null) {
-            return ResponseEntity.badRequest()
-                                    .body("ERROR!\nLa contraseña del usuario no puede estar vacia!");
-        }
-        if (u.getContraseña().trim().length() < 8) {
-            return ResponseEntity.badRequest()
-                                    .body("ERROR!\nLa contraseña del usuario no puede tener menos de 8 caracteres!\nNombre actual: ("+u.getNombre()+")");
+                    .body("El usuario debe ser mayor de edad!\nEdad actual: (" + u.getEdad() + ")");
         }
 
-        /* Si pasa toda las validaciones */
+        /* Validaciones de Rol */
+        if (u.getRol() == null || u.getRol().trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body("ERROR!\nEl rol del usuario no puede estar vacio!");
+        }
+
+        if (!u.getRol().equalsIgnoreCase(roles[0]) &&
+            !u.getRol().equalsIgnoreCase(roles[1])) {
+
+            return ResponseEntity.badRequest()
+                    .body("El rol debe ser [Vendedor] o [Comprador]\nRol actual: (" + u.getRol() + ")");
+        }
+
+        /* Si pasa todas las validaciones */
         u.setId(id);
+
         return ResponseEntity.ok(repo.save(u));
     }
 
     /* DELETE MAPPING */
     /* Borrar a un usuario por su ID */
     public ResponseEntity<?> borrarPorId(String id) {
+
         Usuario existe = repo.findById(id).orElse(null);
+
         if (existe == null) {
             return ResponseEntity.status(404)
-                                    .body("No existe un usuario con la id ("+id+")");
+                    .body("No existe un usuario con la id (" + id + ")");
         }
+
         repo.deleteById(id);
-        return ResponseEntity.ok("Usuario Id:"+id+" ha sido eliminado!");
+
+        return ResponseEntity.ok("Usuario Id: " + id + " ha sido eliminado!");
     }
 }
-
-
