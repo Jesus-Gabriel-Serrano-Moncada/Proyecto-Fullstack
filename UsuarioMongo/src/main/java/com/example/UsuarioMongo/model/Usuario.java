@@ -12,7 +12,7 @@ public class Usuario {
     private String correo;
     private int edad;
     private String rol;
-    private String contraseña;
+    private String contrasena;
     
     public Usuario() {}
 
@@ -32,7 +32,7 @@ public class Usuario {
         return rol;
     }
     public String getContraseña() {
-        return contraseña;
+        return contrasena;
     }
 
     public void setNombre(String nombre) {
@@ -51,7 +51,7 @@ public class Usuario {
         this.id = id;
     }
     public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+        this.contrasena = contraseña;
     }
 
 }
