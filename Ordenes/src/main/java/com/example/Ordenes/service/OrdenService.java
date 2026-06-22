@@ -38,11 +38,19 @@ public class OrdenService {
 
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
-        Object usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
-        if (usuario == null) {
-            return ResponseEntity.badRequest()
-                    .body("El usuario no existe");
-        }
+    Object usuario;
+
+    try {
+        usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
+    } catch (Exception e) {
+        return ResponseEntity.badRequest()
+            .body("El usuario no existe o no está disponible");
+    }
+
+if (usuario == null) {
+    return ResponseEntity.badRequest()
+            .body("El usuario no existe");
+}
 
         Object producto = productoClient.buscarProducto(o.getProductoId());
         if (producto == null) {
