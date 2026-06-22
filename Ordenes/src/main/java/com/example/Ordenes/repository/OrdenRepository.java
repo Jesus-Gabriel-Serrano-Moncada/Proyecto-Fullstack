@@ -5,5 +5,5 @@ import com.example.Ordenes.model.Ordenes;
 
 
 public interface OrdenRepository extends JpaRepository <Ordenes, Long>{
-    List<Ordenes> finByUsuarioId(String usuarioId);    
+    List<Ordenes> findByUsuarioId(String usuarioId);    
 }

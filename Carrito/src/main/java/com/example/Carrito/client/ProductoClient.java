@@ -5,8 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "producto", url = "http://localhost:8082")
 public interface ProductoClient {
-    
-    @GetMapping("{id}")
-    Object buscarProductoId(@PathVariable String id);
 
+    @GetMapping("/productos/{id}")
+    Object buscarProductoId(@PathVariable String id);
 }
