@@ -23,7 +23,8 @@ public class PagoController {
     
     @GetMapping("/estado/{estado}")
     public ResponseEntity<?> buscarPorEstado(@PathVariable String estado) {
-
+        
+        estado = estado.toUpperCase();
         List<Pago> pagos = service.buscarPorEstado(estado);
 
         if (pagos.isEmpty()) {
