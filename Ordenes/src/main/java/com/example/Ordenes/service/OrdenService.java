@@ -18,9 +18,11 @@ public class OrdenService {
     private final UsuarioClient usuarioClient;
     private final ProductoClient productoClient;
 
-    public OrdenService(OrdenRepository repo,
-                        UsuarioClient usuarioClient,
-                        ProductoClient productoClient) {
+    public OrdenService(
+            OrdenRepository repo,
+            UsuarioClient usuarioClient,
+            ProductoClient productoClient) {
+
         this.repo = repo;
         this.usuarioClient = usuarioClient;
         this.productoClient = productoClient;
@@ -36,40 +38,34 @@ public class OrdenService {
 
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
-        
         Object usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
         if (usuario == null) {
             return ResponseEntity.badRequest()
                     .body("El usuario no existe");
         }
 
-        
         Object producto = productoClient.buscarProducto(o.getProductoId());
         if (producto == null) {
             return ResponseEntity.badRequest()
                     .body("El producto no existe");
         }
 
-        
         if (o.getCantidad() < 1) {
             return ResponseEntity.badRequest()
                     .body("La cantidad debe ser mayor a 0");
         }
 
-        
         if (o.getEstado() == null || o.getEstado().trim().isEmpty()) {
             o.setEstado("PENDIENTE");
         }
 
-        // 5. CALCULO SIMPLE DEL TOTAL
+        // Cálculo del total
         Map<String, Object> prodMap = (Map<String, Object>) producto;
-
         float precio = Float.parseFloat(prodMap.get("precio").toString());
         float total = precio * o.getCantidad();
 
         o.setTotal(total);
 
-        
         return ResponseEntity.ok(repo.save(o));
     }
 
