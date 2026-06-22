@@ -1,0 +1,6 @@
+com\example\mongoProducto\config\SecurityConfig.class
+com\example\mongoProducto\service\ProductoService.class
+com\example\mongoProducto\repository\ProductoRepository.class
+com\example\mongoProducto\controller\ProductoController.class
+com\example\mongoProducto\model\Producto.class
+com\example\mongoProducto\MongoProductoApplication.class
