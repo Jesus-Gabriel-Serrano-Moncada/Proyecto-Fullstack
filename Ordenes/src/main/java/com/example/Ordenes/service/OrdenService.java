@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.Ordenes.client.ProductoClient;
+import com.example.Ordenes.client.UsuarioClient;
 import com.example.Ordenes.model.Ordenes;
 import com.example.Ordenes.repository.OrdenRepository;
 
@@ -12,9 +14,15 @@ import com.example.Ordenes.repository.OrdenRepository;
 public class OrdenService {
 
     private final OrdenRepository repo;
+    private final UsuarioClient usuarioClient;
+    private final ProductoClient productoClient;
 
-    public OrdenService(OrdenRepository repo) {
+    public OrdenService(OrdenRepository repo,
+                        UsuarioClient usuarioClient,
+                        ProductoClient productoClient) {
         this.repo = repo;
+        this.usuarioClient = usuarioClient;
+        this.productoClient = productoClient;
     }
 
     public List<Ordenes> listar() {
@@ -27,20 +35,43 @@ public class OrdenService {
 
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
-        if (o.getUsuarioId() == null || o.getUsuarioId().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("El usuario no puede estar vacío");
+        // 1. Validar usuario existe
+        Object usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
+        if (usuario == null) {
+            return ResponseEntity.badRequest()
+                    .body("Usuario no existe");
         }
 
-        if (o.getProductoId() == null || o.getProductoId().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("El producto no puede estar vacío");
+        // 2. Validar producto existe
+        Object producto = productoClient.buscarProducto(o.getProductoId());
+        if (producto == null) {
+            return ResponseEntity.badRequest()
+                    .body("Producto no existe");
         }
 
+        // 3. Validaciones básicas
         if (o.getCantidad() < 1) {
-            return ResponseEntity.badRequest().body("La cantidad debe ser mayor a 0");
+            return ResponseEntity.badRequest()
+                    .body("La cantidad debe ser mayor a 0");
         }
 
+        // 4. Estado por defecto
         if (o.getEstado() == null || o.getEstado().trim().isEmpty()) {
             o.setEstado("PENDIENTE");
+        }
+
+        // 5. CALCULO DE TOTAL (IMPORTANTE)
+        // Aquí asumimos que Producto tiene "precio"
+        try {
+            java.util.Map<String, Object> prodMap = (java.util.Map<String, Object>) producto;
+            double precio = Double.parseDouble(prodMap.get("precio").toString());
+
+            double total = precio * o.getCantidad();
+            o.setTotal((float) total);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Error al calcular total del producto");
         }
 
         return ResponseEntity.ok(repo.save(o));
@@ -48,7 +79,7 @@ public class OrdenService {
 
     public ResponseEntity<?> actualizarOrden(Long id, Ordenes o) {
 
-        if (repo.findById(id).orElse(null) == null) {
+        if (!repo.existsById(id)) {
             return ResponseEntity.status(404)
                     .body("La orden de id < " + id + " > NO existe");
         }
@@ -59,7 +90,7 @@ public class OrdenService {
 
     public ResponseEntity<?> borrarPorId(Long id) {
 
-        if (repo.findById(id).orElse(null) == null) {
+        if (!repo.existsById(id)) {
             return ResponseEntity.status(404)
                     .body("La orden de id < " + id + " > NO existe");
         }
