@@ -1,6 +1,7 @@
 package com.example.Ordenes.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,53 +36,50 @@ public class OrdenService {
 
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
-        // 1. Validar usuario existe
+        
         Object usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
         if (usuario == null) {
             return ResponseEntity.badRequest()
-                    .body("Usuario no existe");
+                    .body("El usuario no existe");
         }
 
-        // 2. Validar producto existe
+        
         Object producto = productoClient.buscarProducto(o.getProductoId());
         if (producto == null) {
             return ResponseEntity.badRequest()
-                    .body("Producto no existe");
+                    .body("El producto no existe");
         }
 
-        // 3. Validaciones básicas
+        
         if (o.getCantidad() < 1) {
             return ResponseEntity.badRequest()
                     .body("La cantidad debe ser mayor a 0");
         }
 
-        // 4. Estado por defecto
+        
         if (o.getEstado() == null || o.getEstado().trim().isEmpty()) {
             o.setEstado("PENDIENTE");
         }
 
-        // 5. CALCULO DE TOTAL (IMPORTANTE)
-        // Aquí asumimos que Producto tiene "precio"
-        try {
-            java.util.Map<String, Object> prodMap = (java.util.Map<String, Object>) producto;
-            double precio = Double.parseDouble(prodMap.get("precio").toString());
+        // 5. CALCULO SIMPLE DEL TOTAL
+        Map<String, Object> prodMap = (Map<String, Object>) producto;
 
-            double total = precio * o.getCantidad();
-            o.setTotal((float) total);
+        float precio = Float.parseFloat(prodMap.get("precio").toString());
+        float total = precio * o.getCantidad();
 
-        } catch (Exception e) {
-            return ResponseEntity.badRequest()
-                    .body("Error al calcular total del producto");
-        }
+        o.setTotal(total);
 
+        
         return ResponseEntity.ok(repo.save(o));
     }
 
     public ResponseEntity<?> actualizarOrden(Long id, Ordenes o) {
 
-        if (!repo.existsById(id)) {
+        Ordenes existente = repo.findById(id).orElse(null);
+
+        if (existente == null) {
             return ResponseEntity.status(404)
-                    .body("La orden de id < " + id + " > NO existe");
+                    .body("La orden de id < " + id + " > no existe");
         }
 
         o.setId(id);
@@ -90,9 +88,11 @@ public class OrdenService {
 
     public ResponseEntity<?> borrarPorId(Long id) {
 
-        if (!repo.existsById(id)) {
+        Ordenes existente = repo.findById(id).orElse(null);
+
+        if (existente == null) {
             return ResponseEntity.status(404)
-                    .body("La orden de id < " + id + " > NO existe");
+                    .body("La orden de id < " + id + " > no existe");
         }
 
         repo.deleteById(id);
