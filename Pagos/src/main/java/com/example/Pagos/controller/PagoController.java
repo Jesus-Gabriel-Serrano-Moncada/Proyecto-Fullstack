@@ -20,10 +20,20 @@ public class PagoController {
     public List<Pago>listPagos(){
         return service.listar();
     }
+    
     @GetMapping("/estado/{estado}")
-    public List<Pago> buscarPorEstado(@PathVariable String estado){
-        return service.buscarPorEstado(estado);
+    public ResponseEntity<?> buscarPorEstado(@PathVariable String estado) {
+
+        List<Pago> pagos = service.buscarPorEstado(estado);
+
+        if (pagos.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body("No existen pagos con estado: " + estado);
+        }
+
+        return ResponseEntity.ok(pagos);
     }
+    
     @PostMapping
     public ResponseEntity<?> crearPago(@RequestBody Pago p){
         return service.crearPago(p);
