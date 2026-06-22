@@ -7,7 +7,7 @@ public class Ordenes {
 
 
 
-    
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
