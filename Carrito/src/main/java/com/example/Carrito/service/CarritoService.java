@@ -1,58 +1,66 @@
 package com.example.Carrito.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.Carrito.model.Carrito;
 import com.example.Carrito.repository.CarritoRepository;
 
-import com.example.Carrito.model.Carrito;
+import java.util.List;
 
 @Service
 public class CarritoService {
 
-    @Autowired
-    private CarritoRepository repo;
+    private final CarritoRepository repo;
 
+    public CarritoService(CarritoRepository repo) {
+        this.repo = repo;
+    }
 
     public ResponseEntity<?> obtenerTodos() {
 
-        if (repo.findAll().isEmpty()) {
-            return ResponseEntity.status(404)
-                                    .body("No hay productos en el carrito");
-        }
-        return ResponseEntity
-                    .ok(repo.findAll());
-    }
+        List<Carrito> lista = repo.findAll();
 
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body("No hay productos en el carrito");
+        }
+
+        return ResponseEntity.ok(lista);
+    }
 
     public ResponseEntity<?> obtenerPorId(Long id) {
-        
-        if (repo.findById(id).orElse(null) == null) {
+
+        Carrito c = repo.findById(id).orElse(null);
+
+        if (c == null) {
             return ResponseEntity.status(404)
-                                    .body("No hay un carrito con la id < "+id+" >");
+                    .body("No hay un carrito con la id < " + id + ">");
         }
-        return ResponseEntity.ok(repo.findById(id));
+
+        return ResponseEntity.ok(c);
     }
 
-
     public ResponseEntity<?> guardar(Carrito c) {
-        
-        return ResponseEntity.ok(repo.save(c));
 
+        if (c.getUsuarioId() == null || c.getProductoId() == null || c.getCantidad() <= 0) {
+            return ResponseEntity.badRequest()
+                    .body("Datos inválidos en el carrito");
+        }
+
+        return ResponseEntity.ok(repo.save(c));
     }
 
     public ResponseEntity<?> eliminar(Long id) {
 
-        if (repo.findById(id).orElse(null) == null) {
+        Carrito c = repo.findById(id).orElse(null);
+
+        if (c == null) {
             return ResponseEntity.status(404)
-                                    .body("No hay un carrito con la id < "+id+" >");
+                    .body("No hay un carrito con la id < " + id + ">");
         }
 
         repo.deleteById(id);
-        return ResponseEntity.ok("Carrito < "+id+" > ha sido eliminado");
+        return ResponseEntity.ok("Carrito < " + id + "> ha sido eliminado");
     }
 }
