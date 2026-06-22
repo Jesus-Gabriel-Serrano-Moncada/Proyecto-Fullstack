@@ -12,7 +12,6 @@ public class Usuario {
     private String correo;
     private int edad;
     private String rol;
-    private String contrasena;
     
     public Usuario() {}
 
@@ -31,9 +30,6 @@ public class Usuario {
     public String getRol() {
         return rol;
     }
-    public String getContraseña() {
-        return contrasena;
-    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -49,9 +45,6 @@ public class Usuario {
     }
     public void setId(String id) {
         this.id = id;
-    }
-    public void setContraseña(String contraseña) {
-        this.contrasena = contraseña;
     }
 
 }
