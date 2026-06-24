@@ -63,4 +63,23 @@ public class CarritoService {
         repo.deleteById(id);
         return ResponseEntity.ok("Carrito < " + id + "> ha sido eliminado");
     }
+    
+    public ResponseEntity<?> actualizar(Long id, Carrito c) {
+
+    Carrito existente = repo.findById(id).orElse(null);
+
+    if (existente == null) {
+        return ResponseEntity.status(404)
+                .body("No hay un carrito con la id < " + id + " >");
+    }
+
+    if (c.getCantidad() < 1) {
+        return ResponseEntity.badRequest()
+                .body("La cantidad debe ser mayor a 0");
+    }
+
+    c.setId(id);
+
+    return ResponseEntity.ok(repo.save(c));
+}
 }
