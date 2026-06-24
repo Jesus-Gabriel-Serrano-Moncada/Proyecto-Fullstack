@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.*;
 public interface UsuarioClient {
 
     @GetMapping("/usuarios/{id}")
-    Object buscarUsuario(@PathVariable String id);
+    String buscarUsuario(@PathVariable String id);
 }
