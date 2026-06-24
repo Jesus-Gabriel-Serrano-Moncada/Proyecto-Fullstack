@@ -34,4 +34,11 @@ public class CarritoController {
     public ResponseEntity<?> eliminar(@PathVariable Long id) {
         return service.eliminar(id);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizar(
+        @PathVariable Long id,
+        @RequestBody Carrito carrito) {
+
+    return service.actualizar(id, carrito);
+    }
 }
