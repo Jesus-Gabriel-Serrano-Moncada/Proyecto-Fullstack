@@ -30,8 +30,15 @@ public class OrdenService {
         this.productoClient = productoClient;
     }
 
-    public List<Ordenes> listar() {
-        return repo.findAll();
+    public ResponseEntity<?> listar() {
+        List<Ordenes> lista = repo.findAll();
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body("No hay ordenes registradas actualmente");
+        }
+
+        return ResponseEntity.ok(lista);
     }
 
     public List<Ordenes> buscarPorUsuario(String usuarioId) {

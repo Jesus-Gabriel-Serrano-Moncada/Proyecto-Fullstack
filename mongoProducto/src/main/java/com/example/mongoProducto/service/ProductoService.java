@@ -16,8 +16,15 @@ public class ProductoService {
         this.repo = repo;
     }
 
-    public List<Producto> listar() {
-        return repo.findAll();
+    public ResponseEntity<?> listar() {
+        List<Producto> lista = repo.findAll();
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body("No hay productos registrados actualmente");
+        }
+
+        return ResponseEntity.ok(lista);
     }
 
     public List<Producto> buscarPorNombre(String nombre) {

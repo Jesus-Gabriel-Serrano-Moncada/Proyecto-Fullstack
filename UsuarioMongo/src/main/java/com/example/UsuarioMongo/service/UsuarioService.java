@@ -17,9 +17,19 @@ public class UsuarioService {
 
     /* GET MAPPING */
     /* listar todos los usuarios */
-    public List<Usuario> listar() {
-        return repo.findAll();
+
+    public ResponseEntity<?> obtenerTodos() {
+
+        List<Usuario> lista = repo.findAll();
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body("No hay usuarios registrados actualmente");
+        }
+
+        return ResponseEntity.ok(lista);
     }
+
 
     /* Buscar a un usuario por su ID */
     public ResponseEntity<?> buscarPorId(String id) {

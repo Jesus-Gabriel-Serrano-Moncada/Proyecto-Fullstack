@@ -19,7 +19,7 @@ public class OrdenController {
     }
 
     @GetMapping
-    public List<Ordenes> listar() {
+    public ResponseEntity<?> listar() {
         return service.listar();
     }
 

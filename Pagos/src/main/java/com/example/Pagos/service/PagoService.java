@@ -14,8 +14,15 @@ public class PagoService {
     @Autowired
     private PagoRepository repo;
 
-    public List<Pago> listar() {
-        return repo.findAll();
+    public ResponseEntity<?> listar() {
+        List<Pago> lista = repo.findAll();
+
+        if (lista.isEmpty()) {
+            return ResponseEntity.status(404)
+                    .body("No hay pagos registrados actualmente");
+        }
+
+        return ResponseEntity.ok(lista);
     }
 
     public List<Pago> buscarPorEstado(String estado) {

@@ -17,7 +17,7 @@ public class PagoController {
     private PagoService service;
 
     @GetMapping
-    public List<Pago>listPagos(){
+    public ResponseEntity<?>listPagos(){
         return service.listar();
     }
     
