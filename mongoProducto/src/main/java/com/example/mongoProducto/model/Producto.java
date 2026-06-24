@@ -11,13 +11,13 @@ public class Producto {
 
     private String nombre;
     private String descripcion;
-    private float precio;
-    private int stock;
+    private Float precio;
+    private Integer stock;
     private String categoria;
 
     public Producto() {}
 
-    public Producto(String id, String nombre, String descripcion, float precio, int stock, String categoria) {
+    public Producto(String id, String nombre, String descripcion, Float precio, Integer stock, String categoria) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -30,15 +30,15 @@ public class Producto {
     public String getId() { return id; }
     public String getNombre() { return nombre; }
     public String getDescripcion() { return descripcion; }
-    public float getPrecio() { return precio; }
-    public int getStock() { return stock; }
+    public Float getPrecio() { return precio; }
+    public Integer getStock() { return stock; }
     public String getCategoria() { return categoria; }
 
     /* SETTERS */
     public void setId(String id) { this.id = id; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public void setPrecio(float precio) { this.precio = precio; }
-    public void setStock(int stock) { this.stock = stock; }
+    public void setPrecio(Float precio) { this.precio = precio; }
+    public void setStock(Integer stock) { this.stock = stock; }
     public void setCategoria(String categoria) { this.categoria = categoria; }
 }
