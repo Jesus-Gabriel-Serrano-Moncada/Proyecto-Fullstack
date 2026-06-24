@@ -40,9 +40,6 @@ public class OrdenService {
 
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
-        // ======================
-        // USUARIO
-        // ======================
         try {
             String usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
 
@@ -56,9 +53,6 @@ public class OrdenService {
                     .body("ERROR FEIGN USUARIO: " + e.getMessage());
         }
 
-        // ======================
-        // PRODUCTO
-        // ======================
         String producto;
 
         try {
@@ -74,9 +68,6 @@ public class OrdenService {
                     .body("ERROR FEIGN PRODUCTO: " + e.getMessage());
         }
 
-        // ======================
-        // VALIDACIONES
-        // ======================
         if (o.getCantidad() < 1) {
             return ResponseEntity.badRequest()
                     .body("La cantidad debe ser mayor a 0");
@@ -86,9 +77,6 @@ public class OrdenService {
             o.setEstado("PENDIENTE");
         }
 
-        // ======================
-        // PARSE JSON PRODUCTO
-        // ======================
         try {
             Map<String, Object> prodMap =
                     mapper.readValue(producto, Map.class);
