@@ -47,10 +47,10 @@ public class OrdenService {
             .body("El usuario no existe o no está disponible");
     }
 
-if (usuario == null) {
-    return ResponseEntity.badRequest()
+    if (usuario == null) {
+        return ResponseEntity.badRequest()
             .body("El usuario no existe");
-}
+    }
 
         Object producto = productoClient.buscarProducto(o.getProductoId());
         if (producto == null) {
