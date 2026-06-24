@@ -23,7 +23,11 @@ public class ProductoService {
     public List<Producto> buscarPorNombre(String nombre) {
         return repo.findByNombre(nombre);
     }
-
+    
+    public Producto buscarPorId(String id) {
+    return repo.findById(id).orElse(null);
+    }
+    
     public ResponseEntity<?> crearProducto(Producto p) {
         String validacion = validarProducto(p);
         if (validacion != null) {

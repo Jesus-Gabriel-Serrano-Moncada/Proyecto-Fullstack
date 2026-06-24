@@ -18,6 +18,18 @@ public class ProductoController {
         this.service = service;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable String id) {
+        Producto producto = service.buscarPorId(id);
+
+    if (producto == null) {
+        return ResponseEntity.status(404)
+                .body("Producto no encontrado con id: " + id);
+    }
+
+    return ResponseEntity.ok(producto);
+}
+
     @GetMapping
     public List<Producto> listarProductos() {
         return service.listar();
