@@ -16,12 +16,12 @@ public class Ordenes {
     private String usuarioId;
     private String productoId;
     private int cantidad;
-    private float total;
+    private Float total;
     private String estado;
 
     public Ordenes() {}
 
-    public Ordenes(String usuarioId, String productoId, int cantidad, float total, String estado) {
+    public Ordenes(String usuarioId, String productoId, int cantidad, Float total, String estado) {
         this.usuarioId = usuarioId;
         this.productoId = productoId;
         this.cantidad = cantidad;
@@ -45,7 +45,7 @@ public class Ordenes {
         return cantidad;
     }
 
-    public float getTotal() {
+    public Float getTotal() {
         return total;
     }
 
@@ -69,7 +69,7 @@ public class Ordenes {
         this.cantidad = cantidad;
     }
 
-    public void setTotal(float total) {
+    public void setTotal(Float total) {
         this.total = total;
     }
 

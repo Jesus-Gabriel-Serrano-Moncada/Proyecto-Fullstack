@@ -36,11 +36,11 @@ public class SecurityConfig {
         throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().authenticated())
-            .httpBasic(Customizer.withDefaults());
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .anyRequest().permitAll()
+        );
 
-        return http.build();
+    return http.build();
     }
 }

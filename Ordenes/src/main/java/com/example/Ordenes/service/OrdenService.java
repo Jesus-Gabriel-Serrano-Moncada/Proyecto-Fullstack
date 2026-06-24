@@ -38,21 +38,30 @@ public class OrdenService {
 
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
-    Object usuario;
+        try {
+            System.out.println("Llamando UsuarioClient...");
+            String usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
+            System.out.println("Usuario respuesta: " + usuario);
 
-    try {
-        usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
-    } catch (Exception e) {
-        return ResponseEntity.badRequest()
-            .body("El usuario no existe o no está disponible");
-    }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body("ERROR FEIGN USUARIO: " + e.getMessage());
+        }
 
-    if (usuario == null) {
-        return ResponseEntity.badRequest()
-            .body("El usuario no existe");
-    }
+        Object producto;
 
-        Object producto = productoClient.buscarProducto(o.getProductoId());
+        try {
+            System.out.println("➡ Llamando ProductoClient...");
+            producto = productoClient.buscarProducto(o.getProductoId());
+            System.out.println("✔ Producto respuesta: " + producto);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body("ERROR FEIGN PRODUCTO: " + e.getMessage());
+        }
+
         if (producto == null) {
             return ResponseEntity.badRequest()
                     .body("El producto no existe");
@@ -67,10 +76,11 @@ public class OrdenService {
             o.setEstado("PENDIENTE");
         }
 
-        // Cálculo del total
+        // CALCULO DEL TOTAL
         Map<String, Object> prodMap = (Map<String, Object>) producto;
-        float precio = Float.parseFloat(prodMap.get("precio").toString());
-        float total = precio * o.getCantidad();
+
+        Float precio = Float.parseFloat(prodMap.get("precio").toString());
+        Float total = precio * o.getCantidad();
 
         o.setTotal(total);
 
