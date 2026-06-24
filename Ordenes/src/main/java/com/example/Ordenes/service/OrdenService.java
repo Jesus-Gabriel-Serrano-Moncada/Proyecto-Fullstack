@@ -10,6 +10,7 @@ import com.example.Ordenes.client.ProductoClient;
 import com.example.Ordenes.client.UsuarioClient;
 import com.example.Ordenes.model.Ordenes;
 import com.example.Ordenes.repository.OrdenRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class OrdenService {
@@ -17,6 +18,7 @@ public class OrdenService {
     private final OrdenRepository repo;
     private final UsuarioClient usuarioClient;
     private final ProductoClient productoClient;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public OrdenService(
             OrdenRepository repo,
@@ -38,35 +40,43 @@ public class OrdenService {
 
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
+        // ======================
+        // USUARIO
+        // ======================
         try {
-            System.out.println("Llamando UsuarioClient...");
             String usuario = usuarioClient.buscarUsuario(o.getUsuarioId());
-            System.out.println("Usuario respuesta: " + usuario);
+
+            if (usuario == null || usuario.isBlank()) {
+                return ResponseEntity.badRequest()
+                        .body("El usuario no existe");
+            }
 
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest()
                     .body("ERROR FEIGN USUARIO: " + e.getMessage());
         }
 
-        Object producto;
+        // ======================
+        // PRODUCTO
+        // ======================
+        String producto;
 
         try {
-            System.out.println("➡ Llamando ProductoClient...");
             producto = productoClient.buscarProducto(o.getProductoId());
-            System.out.println("✔ Producto respuesta: " + producto);
+
+            if (producto == null || producto.isBlank()) {
+                return ResponseEntity.badRequest()
+                        .body("El producto no existe");
+            }
 
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.badRequest()
                     .body("ERROR FEIGN PRODUCTO: " + e.getMessage());
         }
 
-        if (producto == null) {
-            return ResponseEntity.badRequest()
-                    .body("El producto no existe");
-        }
-
+        // ======================
+        // VALIDACIONES
+        // ======================
         if (o.getCantidad() < 1) {
             return ResponseEntity.badRequest()
                     .body("La cantidad debe ser mayor a 0");
@@ -76,13 +86,22 @@ public class OrdenService {
             o.setEstado("PENDIENTE");
         }
 
-        // CALCULO DEL TOTAL
-        Map<String, Object> prodMap = (Map<String, Object>) producto;
+        // ======================
+        // PARSE JSON PRODUCTO
+        // ======================
+        try {
+            Map<String, Object> prodMap =
+                    mapper.readValue(producto, Map.class);
 
-        Float precio = Float.parseFloat(prodMap.get("precio").toString());
-        Float total = precio * o.getCantidad();
+            Float precio = Float.parseFloat(prodMap.get("precio").toString());
+            Float total = precio * o.getCantidad();
 
-        o.setTotal(total);
+            o.setTotal(total);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body("Error procesando producto: " + e.getMessage());
+        }
 
         return ResponseEntity.ok(repo.save(o));
     }
