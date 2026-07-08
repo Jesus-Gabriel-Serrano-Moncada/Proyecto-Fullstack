@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.Inventario.client.ProductoClient;
 import com.example.Inventario.model.Inventario;
 import com.example.Inventario.repository.InventarioRepository;
 
@@ -12,9 +13,14 @@ import com.example.Inventario.repository.InventarioRepository;
 public class InventarioService {
 
     private final InventarioRepository repo;
+    private final ProductoClient productoClient; // <-- AGREGAR
 
-    public InventarioService(InventarioRepository repo) {
+    public InventarioService(
+            InventarioRepository repo,
+            ProductoClient productoClient) {
+
         this.repo = repo;
+        this.productoClient = productoClient;
     }
 
     public List<Inventario> listar() {
@@ -31,6 +37,21 @@ public class InventarioService {
 
     public ResponseEntity<?> crearInventario(Inventario inventario) {
 
+        try {
+
+            String producto = productoClient.buscarProducto(inventario.getProductoId());
+
+            if (producto == null) {
+                return ResponseEntity.badRequest()
+                        .body("El producto no existe");
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.badRequest()
+                    .body("El producto no existe o el microservicio no está disponible");
+        }
+
         String validacion = validarInventario(inventario);
 
         if (validacion != null) {
@@ -45,6 +66,22 @@ public class InventarioService {
         if (!repo.existsById(id)) {
             return ResponseEntity.status(404)
                     .body("El inventario con id < " + id + " > no existe");
+        }
+
+        // Verificar que exista el producto
+        try {
+
+            String producto = productoClient.buscarProducto(inventario.getProductoId());
+
+            if (producto == null) {
+                return ResponseEntity.badRequest()
+                        .body("El producto no existe");
+            }
+
+        } catch (Exception e) {
+
+            return ResponseEntity.badRequest()
+                    .body("El producto no existe o el microservicio no está disponible");
         }
 
         String validacion = validarInventario(inventario);
