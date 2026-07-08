@@ -28,6 +28,19 @@ public class OrdenController {
         return service.buscarPorUsuario(usuarioId);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+
+    Ordenes orden = service.buscarPorId(id);
+
+    if (orden == null) {
+        return ResponseEntity.status(404)
+                .body("La orden con id < " + id + " > no existe");
+    }
+
+    return ResponseEntity.ok(orden);
+    }
+
     @PostMapping
     public ResponseEntity<?> crear(@RequestBody Ordenes o) {
         return service.crearOrden(o);

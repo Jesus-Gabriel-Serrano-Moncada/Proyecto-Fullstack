@@ -45,6 +45,10 @@ public class OrdenService {
         return repo.findByUsuarioId(usuarioId);
     }
 
+    public Ordenes buscarPorId(Long id) {
+        return repo.findById(id).orElse(null);
+    }
+
     public ResponseEntity<?> crearOrden(Ordenes o) {
 
         try {
