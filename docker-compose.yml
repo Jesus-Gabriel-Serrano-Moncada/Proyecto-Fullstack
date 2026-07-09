@@ -14,7 +14,6 @@ services:
       timeout: 5s
       retries: 5
 
-
   mysql-db:
     image: mysql:8.4
     container_name: mysql-db
@@ -30,38 +29,35 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot123"]
       interval: 10s
       timeout: 5s
-      retries: 5
-
+      retries: 10
 
   usuario-service:
     image: proyecto-fullstack-usuario-service
     container_name: usuario-service
     ports:
-      - "8081:8081"
+      - "9081:8081"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       mongo-db:
         condition: service_healthy
-
 
   producto-service:
     image: proyecto-fullstack-producto-service
     container_name: producto-service
     ports:
-      - "8082:8082"
+      - "9082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       mongo-db:
         condition: service_healthy
 
-
   carrito-service:
     image: proyecto-fullstack-carrito-service
     container_name: carrito-service
     ports:
-      - "8083:8083"
+      - "9083:8083"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -72,12 +68,11 @@ services:
       producto-service:
         condition: service_started
 
-
   ordenes-service:
     image: proyecto-fullstack-ordenes-service
     container_name: ordenes-service
     ports:
-      - "8084:8084"
+      - "9084:8084"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -90,58 +85,50 @@ services:
       pagos-service:
         condition: service_started
 
-
   pagos-service:
     image: proyecto-fullstack-pagos-service
     container_name: pagos-service
     ports:
-      - "8085:8085"
+      - "9085:8085"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       mysql-db:
         condition: service_healthy
-
 
   inventario-service:
     image: proyecto-fullstack-inventario-service
     container_name: inventario-service
     ports:
-      - "8086:8086"
+      - "9086:8086"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       mysql-db:
         condition: service_healthy
-
 
   envios-service:
     image: proyecto-fullstack-envios-service
     container_name: envios-service
     ports:
-      - "8087:8087"
+      - "9087:8087"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       mysql-db:
         condition: service_healthy
-
 
   notificaciones-service:
     image: proyecto-fullstack-notificaciones-service
     container_name: notificaciones-service
     ports:
-      - "8088:8088"
+      - "9088:8088"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       mysql-db:
         condition: service_healthy
 
-
-
 volumes:
-
   mongo-data:
-
   mysql-data:
