@@ -68,7 +68,7 @@ public class InventarioService {
                     .body("El inventario con id < " + id + " > no existe");
         }
 
-        // Verificar que exista el producto
+
         try {
 
             String producto = productoClient.buscarProducto(inventario.getProductoId());
