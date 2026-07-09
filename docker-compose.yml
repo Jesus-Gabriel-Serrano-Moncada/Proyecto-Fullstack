@@ -1,14 +1,14 @@
 services:
 
-  # BASES DE DATOS
-
-
   mongo-db:
     image: mongo:8.0
     container_name: mongo-db
     restart: always
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
 
   mysql-db:
     image: mysql:8.4
@@ -16,116 +16,107 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root123
-
     ports:
       - "3307:3306"
-
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot123"]
       interval: 10s
-      timeout: 30s
-      retries: 10
+      timeout: 5s
+      retries: 5
 
-  # USUARIO MONGO
 
   usuario-service:
-    build: ./UsuarioMongo
+    image: proyecto-fullstack-usuario-service
     container_name: usuario-service
-
     ports:
       - "8081:8081"
-
     depends_on:
       - mongo-db
 
-  # PRODUCTO MONGO
 
   producto-service:
-    build: ./mongoProducto
+    image: proyecto-fullstack-producto-service
     container_name: producto-service
-
     ports:
       - "8082:8082"
-
     depends_on:
       - mongo-db
 
-  # CARRITO
 
   carrito-service:
-    build: ./Carrito
+    image: proyecto-fullstack-carrito-service
     container_name: carrito-service
-
     ports:
       - "8083:8083"
-
     depends_on:
       mysql-db:
         condition: service_healthy
+      usuario-service:
+        condition: service_started
+      producto-service:
+        condition: service_started
 
-
-  # ORDENES
 
   ordenes-service:
-    build: ./Ordenes
+    image: proyecto-fullstack-ordenes-service
     container_name: ordenes-service
-
     ports:
       - "8084:8084"
-
     depends_on:
       mysql-db:
         condition: service_healthy
+      carrito-service:
+        condition: service_started
+      producto-service:
+        condition: service_started
 
-
-  # PAGOS
 
   pagos-service:
-    build: ./Pagos
+    image: proyecto-fullstack-pagos-service
     container_name: pagos-service
-
     ports:
       - "8085:8085"
-
     depends_on:
       mysql-db:
         condition: service_healthy
 
-  # INVENTARIO
 
   inventario-service:
-    build: ./Inventario
+    image: proyecto-fullstack-inventario-service
     container_name: inventario-service
-
     ports:
       - "8086:8086"
-
     depends_on:
       mysql-db:
         condition: service_healthy
 
-  # ENVIOS
 
   envios-service:
-    build: ./Envios
+    image: proyecto-fullstack-envios-service
     container_name: envios-service
-
     ports:
       - "8087:8087"
-
     depends_on:
       mysql-db:
         condition: service_healthy
 
-  # NOTIFICACIONES
 
   notificaciones-service:
-    build: ./Notificaciones
+    image: proyecto-fullstack-notificaciones-service
     container_name: notificaciones-service
-
     ports:
       - "8088:8088"
-
     depends_on:
       mysql-db:
         condition: service_healthy
+
+
+
+volumes:
+
+  mongo-data:
+
+  mysql-data:
